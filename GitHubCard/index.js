@@ -4,24 +4,20 @@
     https://api.github.com/users/<your name>
 */
 import axios from "axios";
-// console.log(axios);
-// const result = axios.get("https://api.github.com/users/kmcervan");
-// console.log(result);
-console.log('1 getting Data');
+
+const cards = document.querySelector(".cards");
 
 axios
 .get('https://api.github.com/users/kmcervan')
 .then((res) => {
-    console.log('2 here is the future data', futureData);
-    const images = futureData.data.message;
-    console.log((images) => {
-      const hubMaker = newMaker({ })
-    })
+    console.log(res);
+    const infoGit = res.data;
+    const newMaker = hubMaker(infoGit);
+    cards.appendChild(newMaker);
   })
   .catch(error => {
-    console.log(drama);
+    console.log(error);
   })
-  console.log('3 Data requested');
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -46,17 +42,24 @@ axios
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan','dustinmyers','justsml','luishrd','bigknell'];
 
-
+followersArray.forEach(link => {
+  axios
+  .get('https://api.github.com/users/' + link)
+  .then((res) => {
+      const newMaker = hubMaker(res.data);
+      cards.appendChild(newMaker);
+    }) 
+})
 
 /*
   List of LS Instructors Github username's:
-    tetondan
-    dustinmyers
-    justsml
-    luishrd
-    bigknell
+    
+    
+    
+    
+    
 */
 function hubMaker (data){
   const card = document.createElement('div');
@@ -73,29 +76,31 @@ function hubMaker (data){
 
   card.appendChild(img);
   card.appendChild(cardInfo);
-  card.appendChild(name);
-  card.appendChild(userName);
-  card.appendChild(location);
-  card.appendChild(profile);
-  card.appendChild(a);
-  card.appendChild(followers);
-  card.appendChild(following);
-  card.appendChild(bio);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(a);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
 
   card.classList.add('card');
   cardInfo.classList.add('card-info');
   name.classList.add('name');
   userName.classList.add('username');
   
-  img.src = `${'https://avatars2.githubusercontent.com/u/72095687?v=4'}`;
-  name.textContent = `${res.data.name}`;
+  img.src = `${data.avatar_url}`;
+  name.textContent = `${data.name}`;
   userName.textContent = `${data.login}`;
   location.textContent = `${data.location}`;
   profile.textContent = 'Profile:';
-  a.href = `${'https://api.github.com/users/kmcervan'}`;
+  a.href = `${data.url}`;
   followers.textContent = `${data.followers}`;
   following.textContent = `${data.following}`;
   bio.textContent = `${data.bio}`;
+
+  return card;
 }
 
 /*
